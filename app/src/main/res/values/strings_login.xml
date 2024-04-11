@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="login_greeting">Please enter your login details.</string>
+    <string name="login_text">Login</string>
+    <string name="login_no_account_support">Don\'t have an account?</string>
+    <string name="login_forgot_password">Forgot Password?</string>
+    <string name="login_failed">Incorrect phone number or password, please double-check and try again.</string>
+</resources>
