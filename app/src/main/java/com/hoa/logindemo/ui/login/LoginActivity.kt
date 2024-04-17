@@ -71,6 +71,6 @@ private fun LoginScreen(viewModel: LoginViewModel = viewModel()) {
 @Composable
 private fun LoginScreenPreview() {
     LoginDemoTheme {
-        LoginScreen(LoginViewModel(UserManagerImpl(), FakeUserRepository()))
+        LoginScreen(LoginViewModel({ UserManagerImpl() }, FakeUserRepository()))
     }
 }

@@ -38,7 +38,7 @@ class LoginViewModelTest {
     private val dispatcher: TestDispatcher = UnconfinedTestDispatcher()
     private val testLifecycleOwner: TestLifecycleOwner = TestLifecycleOwner()
 
-    private val viewModel = LoginViewModel(userManager, userRepository)
+    private val viewModel = LoginViewModel({ userManager }, userRepository)
 
     @Rule
     @JvmField

@@ -12,11 +12,12 @@ import com.hoa.logindemo.repository.config.BadRequest
 import com.hoa.logindemo.repository.config.NoInternet
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import dagger.Lazy
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val userManager: UserManager,
+    private val userManager: Lazy<UserManager>,
     private val userRepository: UserRepository
 ) : ViewModel() {
 
@@ -27,7 +28,7 @@ class LoginViewModel @Inject constructor(
             uiState.value = LoginUiState.Loading
             when (val response = userRepository.login(phoneNumber, password)) {
                 is ApiResponse.Success -> {
-                    userManager.storeUserAccessibility(response.data)
+                    userManager.get().storeUserAccessibility(response.data)
                     uiState.value = LoginUiState.LoginSuccess
                 }
                 is ApiResponse.Exception -> {
