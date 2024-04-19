@@ -5,7 +5,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -16,18 +15,17 @@ import com.hoa.logindemo.ui.theme.LoginDemoTheme
 
 @Composable
 fun SingleInputField(
-    value: MutableState<String>,
+    value: String,
     label: String,
     modifier: Modifier = Modifier,
-    onTextChanged: (() -> Unit)? = null
+    onTextChanged: ((String) -> Unit)? = null
 ) {
     OutlinedTextField(
         singleLine = true,
         modifier = modifier.fillMaxWidth(),
-        value = value.value,
+        value = value,
         onValueChange = {
-            value.value = it
-            onTextChanged?.invoke()
+            onTextChanged?.invoke(it)
         },
         label = {
             Text(color = Grey, text = label)
@@ -42,7 +40,6 @@ fun SingleInputField(
 @Composable
 private fun SingleInputFieldPreview() {
     LoginDemoTheme {
-        val phone = remember { mutableStateOf("345345") }
-        SingleInputField(phone, "Phone Number")
+        SingleInputField("2342343", "Phone Number")
     }
 }

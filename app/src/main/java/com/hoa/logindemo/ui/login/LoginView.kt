@@ -65,17 +65,23 @@ fun LoginView(
 
             Spacer(modifier = Modifier.weight(0.04F))
             SingleInputField(
-                phoneNumber,
+                phoneNumber.value,
                 stringResource(R.string.phone_number),
                 Modifier
                     .padding(horizontal = 20.dp, vertical = 6.dp)
                     .semantics { contentDescription = "ipPhoneNumber" },
-                onTextChanged = { errorMessageRes.value = null }
+                onTextChanged = {
+                    phoneNumber.value = it
+                    errorMessageRes.value = null
+                }
             )
             PasswordInputField(
-                password,
+                password.value,
                 Modifier.padding(horizontal = 20.dp),
-                onTextChanged = { errorMessageRes.value = null }
+                onTextChanged = {
+                    password.value = it
+                    errorMessageRes.value = null
+                }
             ) {
                 onLoginClick(phoneNumber.value, password.value)
                 keyboardController?.hide()

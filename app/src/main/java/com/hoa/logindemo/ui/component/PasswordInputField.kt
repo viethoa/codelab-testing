@@ -9,7 +9,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -34,10 +33,10 @@ import com.hoa.logindemo.ui.theme.PrimaryColor
 
 @Composable
 fun PasswordInputField(
-    password: MutableState<String>,
+    password: String,
     modifier: Modifier = Modifier,
     label: String = stringResource(R.string.password),
-    onTextChanged: (() -> Unit)? = null,
+    onTextChanged: ((String) -> Unit)? = null,
     onKeyboardActionDone: (() -> Unit)? = null
 ) {
     var passwordIcon by remember { mutableIntStateOf(R.drawable.ic_hide_password) }
@@ -53,10 +52,9 @@ fun PasswordInputField(
                     start.linkTo(parent.start)
                 }
                 .semantics { contentDescription = "ipPassword" },
-            value = password.value,
+            value = password,
             onValueChange = {
-                password.value = it
-                onTextChanged?.invoke()
+                onTextChanged?.invoke(it)
             },
             label = {
                 Text(color = Grey, text = label)
@@ -68,7 +66,7 @@ fun PasswordInputField(
             ),
             keyboardActions = KeyboardActions(
                 onDone = {
-                    if (password.value.isNotEmpty()) {
+                    if (password.isNotEmpty()) {
                         onKeyboardActionDone?.invoke()
                     }
                 }
@@ -106,7 +104,6 @@ fun PasswordInputField(
 @Composable
 private fun PasswordInputFieldPreview() {
     LoginDemoTheme {
-        val password = remember { mutableStateOf("afaffadf") }
-        PasswordInputField(password = password)
+        PasswordInputField(password = "afaffadf")
     }
 }
