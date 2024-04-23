@@ -15,6 +15,7 @@ import com.hoa.logindemo.ui.login.LoginViewModel
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.coVerifySequence
 import io.mockk.confirmVerified
 import io.mockk.mockk
 import io.mockk.verify
@@ -70,6 +71,10 @@ class LoginViewModelTest {
         assertEquals(expectedUiState, uiState)
         coVerify(exactly = 1) { userRepository.login("1232", "password") }
         verify(exactly = 1) { userManager.storeUserAccessibility(expectedData) }
+        coVerifySequence {
+            userRepository.login("1232", "password")
+            userManager.storeUserAccessibility(expectedData)
+        }
         confirmVerified(userRepository, userManager)
     }
 
