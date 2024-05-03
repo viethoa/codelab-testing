@@ -1,6 +1,7 @@
 package com.hoa.logindemo.ui.login
 
 import androidx.annotation.StringRes
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -10,9 +11,9 @@ import com.hoa.logindemo.repository.UserRepository
 import com.hoa.logindemo.repository.config.ApiResponse
 import com.hoa.logindemo.repository.config.BadRequest
 import com.hoa.logindemo.repository.config.NoInternet
+import dagger.Lazy
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import dagger.Lazy
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,19 +22,20 @@ class LoginViewModel @Inject constructor(
     private val userRepository: UserRepository
 ) : ViewModel() {
 
-    val uiState = MutableLiveData<LoginUiState>()
+    private val _uiState = MutableLiveData<LoginUiState>()
+    val uiState: LiveData<LoginUiState> = _uiState
 
     fun login(phoneNumber: String, password: String) {
         viewModelScope.launch {
-            uiState.value = LoginUiState.Loading
+            _uiState.value = LoginUiState.Loading
             when (val response = userRepository.login(phoneNumber, password)) {
                 is ApiResponse.Success -> {
                     userManager.get().storeUserAccessibility(response.data)
-                    uiState.value = LoginUiState.LoginSuccess
+                    _uiState.value = LoginUiState.LoginSuccess
                 }
                 is ApiResponse.Exception -> {
                     val errorStringRes = response.getErrorMessage()
-                    uiState.value = LoginUiState.LoginError(errorStringRes)
+                    _uiState.value = LoginUiState.LoginError(errorStringRes)
                 }
             }
         }

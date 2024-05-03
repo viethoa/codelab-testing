@@ -27,16 +27,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.hoa.logindemo.R
+import com.hoa.logindemo.ui.extension.EditableTextState
+import com.hoa.logindemo.ui.extension.rememberEditableTextState
 import com.hoa.logindemo.ui.theme.Grey
 import com.hoa.logindemo.ui.theme.LoginDemoTheme
 import com.hoa.logindemo.ui.theme.PrimaryColor
 
 @Composable
 fun PasswordInputField(
-    password: String,
     modifier: Modifier = Modifier,
+    passwordState: EditableTextState,
     label: String = stringResource(R.string.password),
-    onTextChanged: ((String) -> Unit)? = null,
     onKeyboardActionDone: (() -> Unit)? = null
 ) {
     var passwordIcon by remember { mutableIntStateOf(R.drawable.ic_hide_password) }
@@ -52,9 +53,9 @@ fun PasswordInputField(
                     start.linkTo(parent.start)
                 }
                 .semantics { contentDescription = "ipPassword" },
-            value = password,
+            value = passwordState.value,
             onValueChange = {
-                onTextChanged?.invoke(it)
+                passwordState.set(it)
             },
             label = {
                 Text(color = Grey, text = label)
@@ -66,7 +67,7 @@ fun PasswordInputField(
             ),
             keyboardActions = KeyboardActions(
                 onDone = {
-                    if (password.isNotEmpty()) {
+                    if (passwordState.isNotEmpty()) {
                         onKeyboardActionDone?.invoke()
                     }
                 }
@@ -104,6 +105,6 @@ fun PasswordInputField(
 @Composable
 private fun PasswordInputFieldPreview() {
     LoginDemoTheme {
-        PasswordInputField(password = "afaffadf")
+        PasswordInputField(passwordState = rememberEditableTextState())
     }
 }

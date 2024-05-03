@@ -7,6 +7,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -19,12 +20,12 @@ import androidx.compose.ui.unit.sp
 fun RoundedCornerButton(
     modifier: Modifier,
     @StringRes textRes: Int,
-    enable: Boolean,
+    enable: State<Boolean>,
     description: String,
     onLoginClicked: () -> Unit
 ) {
     Button(
-        enabled = enable,
+        enabled = enable.value,
         onClick = onLoginClicked,
         shape = RoundedCornerShape(6.dp),
         modifier = modifier

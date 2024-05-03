@@ -11,9 +11,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -33,19 +32,44 @@ import com.hoa.logindemo.ui.component.ErrorMessageText
 import com.hoa.logindemo.ui.component.PasswordInputField
 import com.hoa.logindemo.ui.component.RoundedCornerButton
 import com.hoa.logindemo.ui.component.SingleInputField
+import com.hoa.logindemo.ui.extension.EditableTextState
+import com.hoa.logindemo.ui.extension.rememberEditableTextState
 import com.hoa.logindemo.ui.theme.LoginDemoTheme
 import com.hoa.logindemo.ui.theme.PrimaryColor
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
 
 @Composable
 @OptIn(ExperimentalComposeUiApi::class)
 fun LoginView(
-    errorMessageRes: MutableState<Int?>,
+    errorMessageState: EditableTextState,
     onLoginClick: (String, String) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
-    val phoneNumber = rememberSaveable { mutableStateOf("") }
-    val password = rememberSaveable { mutableStateOf("") }
+    val enableLoginButtonState = rememberSaveable { mutableStateOf(false) }
+    val passwordState = rememberEditableTextState()
+    val phoneNumberState = rememberEditableTextState()
+
+    LaunchedEffect(passwordState, phoneNumberState) {
+        passwordState.asFlow()
+            .combine(phoneNumberState.asFlow()) { _, _ -> Any() }
+            .drop(1)
+            .collect {
+                errorMessageState.clear()
+            }
+    }
+    LaunchedEffect(passwordState, phoneNumberState) {
+        passwordState.asFlow()
+            .combine(phoneNumberState.asFlow()) { password, phone ->
+                password.isNotEmpty() && phone.isNotEmpty()
+            }
+            .distinctUntilChanged()
+            .collect {
+                enableLoginButtonState.value = it
+            }
+    }
 
     Surface(modifier = Modifier.background(Color.White)) {
         Column {
@@ -65,25 +89,17 @@ fun LoginView(
 
             Spacer(modifier = Modifier.weight(0.04F))
             SingleInputField(
-                phoneNumber.value,
-                stringResource(R.string.phone_number),
                 Modifier
                     .padding(horizontal = 20.dp, vertical = 6.dp)
                     .semantics { contentDescription = "ipPhoneNumber" },
-                onTextChanged = {
-                    phoneNumber.value = it
-                    errorMessageRes.value = null
-                }
+                stringResource(R.string.phone_number),
+                phoneNumberState
             )
             PasswordInputField(
-                password.value,
                 Modifier.padding(horizontal = 20.dp),
-                onTextChanged = {
-                    password.value = it
-                    errorMessageRes.value = null
-                }
+                passwordState,
             ) {
-                onLoginClick(phoneNumber.value, password.value)
+                onLoginClick(phoneNumberState.value, passwordState.value)
                 keyboardController?.hide()
                 focusManager.clearFocus()
             }
@@ -92,15 +108,15 @@ fun LoginView(
                     .padding(20.dp, 8.dp, 20.dp, 0.dp)
                     .semantics { contentDescription = "txtErrorMessage" },
                 description = "txtErrorMessage",
-                messageRes = errorMessageRes.value
+                errorState = errorMessageState
             )
             RoundedCornerButton(
                 modifier = Modifier.padding(20.dp, 26.dp, 20.dp, 0.dp),
                 textRes = R.string.login_text,
-                enable = phoneNumber.value.isNotEmpty() && password.value.isNotEmpty(),
+                enable = enableLoginButtonState,
                 description = "btnLoginIn"
             ) {
-                onLoginClick(phoneNumber.value, password.value)
+                onLoginClick(phoneNumberState.value, passwordState.value)
                 keyboardController?.hide()
                 focusManager.clearFocus()
             }
@@ -141,7 +157,7 @@ private fun ContactSupportBox(
 @Preview
 @Composable
 private fun PreviewLoginView() {
-    val errorMessage = remember { mutableStateOf<Int?>(null) }
+    val errorMessage = rememberEditableTextState()
     LoginDemoTheme {
         LoginView(errorMessage) { _, _ -> }
     }
