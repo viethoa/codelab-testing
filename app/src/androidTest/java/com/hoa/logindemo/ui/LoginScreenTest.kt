@@ -56,7 +56,7 @@ class LoginScreenTest {
     }
 
     @Test
-    fun verifyDefaultUIState() {
+    fun verifyDefaultUIWhenScreenJustOpen() {
         composeTestRule
             .onNodeWithContentDescription("ipPhoneNumber")
             .assertIsDisplayed()
@@ -76,10 +76,13 @@ class LoginScreenTest {
     }
 
     @Test
-    fun verifyLoginButtonEnable() {
+    fun verifyUXForLoginButton() {
+        // Not enable as default
         composeTestRule
             .onNodeWithContentDescription("btnLoginIn")
             .assertIsNotEnabled()
+
+        // Enable Login Button after fulfill phone-number and password
         composeTestRule
             .onNodeWithContentDescription("ipPhoneNumber")
             .performTextInput("32455")
@@ -92,7 +95,7 @@ class LoginScreenTest {
     }
 
     @Test
-    fun loginSuccessful() {
+    fun verifyLoginSuccessBehaviour() {
         mockServer.enqueue(
             MockResponse()
                 .setResponseCode(HttpURLConnection.HTTP_OK)
@@ -119,7 +122,7 @@ class LoginScreenTest {
     }
 
     @Test
-    fun loginWithWrongAccountInfo() {
+    fun verifyUIWhenLoginWithWrongAccount() {
         mockServer.enqueue(
             MockResponse()
                 .setResponseCode(HttpURLConnection.HTTP_BAD_REQUEST)
@@ -146,7 +149,7 @@ class LoginScreenTest {
     }
 
     @Test
-    fun loginWithNoNetworkError() {
+    fun verifyUIWhenLoginWithNoNetworkConnection() {
         val expectedError = composeTestRule.activity.getString(R.string.no_internet_connection)
         mockServer.enqueue(
             MockResponse().setSocketPolicy(SocketPolicy.DISCONNECT_AT_START)
@@ -168,7 +171,7 @@ class LoginScreenTest {
     }
 
     @Test
-    fun loginWhenSystemIsNotWorkingRight() {
+    fun verifyUIWhenSystemIsNotWorkingRight() {
         val expectedError = composeTestRule.activity.getString(R.string.something_went_wrong)
         mockServer.enqueue(
             MockResponse().setResponseCode(HttpURLConnection.HTTP_INTERNAL_ERROR)

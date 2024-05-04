@@ -1,14 +1,12 @@
 package com.hoa.logindemo.ui.login
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -17,7 +15,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -71,59 +68,57 @@ fun LoginView(
             }
     }
 
-    Surface(modifier = Modifier.background(Color.White)) {
-        Column {
-            Spacer(modifier = Modifier.weight(0.12F))
-            Image(
-                painter = painterResource(R.drawable.ic_profile),
-                contentDescription = "icon profile",
-                modifier = Modifier
-                    .height(140.dp)
-                    .align(Alignment.CenterHorizontally)
-            )
-            Text(
-                text = stringResource(R.string.login_greeting),
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-            )
+    Column {
+        Spacer(modifier = Modifier.weight(0.12F))
+        Image(
+            painter = painterResource(R.drawable.ic_profile),
+            contentDescription = "icon profile",
+            modifier = Modifier
+                .height(140.dp)
+                .align(Alignment.CenterHorizontally)
+        )
+        Text(
+            text = stringResource(R.string.login_greeting),
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+        )
 
-            Spacer(modifier = Modifier.weight(0.04F))
-            SingleInputField(
-                Modifier
-                    .padding(horizontal = 20.dp, vertical = 6.dp)
-                    .semantics { contentDescription = "ipPhoneNumber" },
-                stringResource(R.string.phone_number),
-                phoneNumberState
-            )
-            PasswordInputField(
-                Modifier.padding(horizontal = 20.dp),
-                passwordState,
-            ) {
-                onLoginClick(phoneNumberState.value, passwordState.value)
-                keyboardController?.hide()
-                focusManager.clearFocus()
-            }
-            ErrorMessageText(
-                modifier = Modifier
-                    .padding(20.dp, 8.dp, 20.dp, 0.dp)
-                    .semantics { contentDescription = "txtErrorMessage" },
-                description = "txtErrorMessage",
-                errorState = errorMessageState
-            )
-            RoundedCornerButton(
-                modifier = Modifier.padding(20.dp, 26.dp, 20.dp, 0.dp),
-                textRes = R.string.login_text,
-                enable = enableLoginButtonState,
-                description = "btnLoginIn"
-            ) {
-                onLoginClick(phoneNumberState.value, passwordState.value)
-                keyboardController?.hide()
-                focusManager.clearFocus()
-            }
-            ContactSupportBox(Modifier.align(Alignment.CenterHorizontally))
-
-            Spacer(modifier = Modifier.weight(0.3F))
+        Spacer(modifier = Modifier.weight(0.04F))
+        SingleInputField(
+            Modifier
+                .padding(horizontal = 20.dp, vertical = 6.dp)
+                .semantics { contentDescription = "ipPhoneNumber" },
+            stringResource(R.string.phone_number),
+            phoneNumberState
+        )
+        PasswordInputField(
+            Modifier.padding(horizontal = 20.dp),
+            passwordState,
+        ) {
+            onLoginClick(phoneNumberState.value, passwordState.value)
+            keyboardController?.hide()
+            focusManager.clearFocus()
         }
+        ErrorMessageText(
+            modifier = Modifier
+                .padding(20.dp, 8.dp, 20.dp, 0.dp)
+                .semantics { contentDescription = "txtErrorMessage" },
+            description = "txtErrorMessage",
+            errorState = errorMessageState
+        )
+        RoundedCornerButton(
+            modifier = Modifier.padding(20.dp, 26.dp, 20.dp, 0.dp),
+            textRes = R.string.login_text,
+            enable = enableLoginButtonState,
+            description = "btnLoginIn"
+        ) {
+            onLoginClick(phoneNumberState.value, passwordState.value)
+            keyboardController?.hide()
+            focusManager.clearFocus()
+        }
+        ContactSupportBox(Modifier.align(Alignment.CenterHorizontally))
+
+        Spacer(modifier = Modifier.weight(0.3F))
     }
 }
 

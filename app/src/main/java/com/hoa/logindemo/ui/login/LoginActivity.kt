@@ -6,7 +6,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -43,10 +42,7 @@ private fun navigateToHomeScreen(context: Context) {
 @Composable
 private fun LoginScreen(viewModel: LoginViewModel = viewModel()) {
     LoginDemoTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            color = MaterialTheme.colorScheme.background
-        ) {
+        Surface(modifier = Modifier.fillMaxSize()) {
             val errorMessage = rememberEditableTextState()
             val uiState by viewModel.uiState.observeAsState()
             LoginView(errorMessage) { phoneNumber, password ->
